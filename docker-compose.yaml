@@ -40,6 +40,3 @@ services:
             - '3306'
         volumes:
             - mysqldb:/var/lib/mysql
-            - ./dockerconf/mysql/mysql.local.conf:/etc/alternatives/my.cnf
-            - ./dockerconf/mysql/mysql.local.conf:/etc/mysql/mysql.cnf
-            - ./backups:/backups:rw
