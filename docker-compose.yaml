@@ -1,10 +1,45 @@
 version: '3.7'
 
-services:
+volumes:
+    mysqldb:
 
+services:
     techblog:
+        container_name: techblog_container
         build: .
+        image: techblog_image
+        restart: always
+        #env_file: 
+        #    - ./generated/personalblog/.env
         ports:
-            - 127.0.0.1:8080:2368
+            - 127.0.0.1:2368:2368
         volumes:
-            - .:/app
+            - ./content:/var/lib/ghost/content
+        environment:
+            #NODE_ENV: 'production'
+            #"url": "https://photos.bensoer.com"
+#            "admin_url": "http://admin.photos.bensoer.com"
+            "adapters__storage__active": "s3"
+            "adapters__storage__region": "us-east-1"
+            "GHOST_STORAGE_ADAPTER_S3_PATH_BUCKET": "debenstack-assets"
+            "GHOST_STORAGE_ADAPTER_S3_PATH_PREFIX": "techblog/content/images"
+            AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+            AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+            AWS_DEFAULT_REGION: "us-east-1"
+        depends_on:
+            - mysql
+    mysql:
+        image: mysql:5.7 # 5.7 is currently in prod. ghost 5 wants 8
+        restart: always
+        container_name: mysql_container
+        environment:
+            MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        ports:
+            - 127.0.0.1:3306:3306
+        expose:
+            - '3306'
+        volumes:
+            - mysqldb:/var/lib/mysql
+            - ./dockerconf/mysql/mysql.local.conf:/etc/alternatives/my.cnf
+            - ./dockerconf/mysql/mysql.local.conf:/etc/mysql/mysql.cnf
+            - ./backups:/backups:rw

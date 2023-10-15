@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+
+    #techblog:
+    #    build: .
+    #    ports:
+    #        - 127.0.0.1:8080:2368
+    #    volumes:
+    #        - .:/app
+
+    techblog2:
+        image: ghost:5
+        restart: always
+        ports: 
+            - 127.0.0.1:2368:2368
+
+    #nginx-ssl-proxy:
+    #    image: danieldent/nginx-ssl-proxy
+    #    restart: always
+    #    environment:
+    #        UPSTREAM: 127.0.0.1:8080
+    #        #SERVERNAME: blog.bensoer.com
+    #        HSTS_HEADER: skip
+    #    ports:
+    #        - "8000:80"
+    #        - "4430:443"
+    #    volumes:
+    #        - "/etc/letsencrypt"
