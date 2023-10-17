@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 #Prerequisites
 RUN apt update && apt upgrade -y && \
-    apt install --no-install-recommends sudo curl apt-utils ca-certificates nginx systemd -y && \
+    apt install --no-install-recommends sudo curl apt-utils ca-certificates nginx systemd gnupg -y && \
     echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
 # Setup users and permissions
@@ -11,13 +11,16 @@ RUN adduser --disabled-password --gecos "" general && \
     echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 USER general
 
-#Install Node v16
-RUN curl -sL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-RUN sudo apt update && sudo apt upgrade -y && sudo apt install -y nodejs
+#Install Node v18
+ENV NODE_MAJOR 18
+RUN sudo mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list && \
+    sudo apt update && sudo apt upgrade -y && sudo apt install -y nodejs
 
 #Configure Ghost
 ENV NODE_ENV production
-ENV GHOST_VERSION 4.48.8
+ENV GHOST_VERSION 5.69.1
 ENV GHOST_CLI_VERSION latest
 ENV GHOST_DIR /var/lib/ghost
 ENV GHOST_CONTENT_DIR /var/lib/ghost/content
