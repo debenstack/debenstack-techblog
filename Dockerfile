@@ -51,7 +51,7 @@ RUN npm install ghost-storage-adapter-s3 && \
     cp -r ./node_modules/ghost-storage-adapter-s3 "${GHOST_CONTENT_DIR}/adapters/storage/s3"
 
 #Install 3rd Party Themes
-COPY ./content/themes/ "${GHOST_CONTENT_DIR}/themes/"
+#COPY ./content/themes/ "${GHOST_CONTENT_DIR}/themes/"
 
 #Entrypoint
 ENTRYPOINT [ "node", "current/index.js" ]
